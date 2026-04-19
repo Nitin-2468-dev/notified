@@ -1,16 +1,22 @@
 {
   "name": "notified",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Windows tray pause reminder flow with Start/Dismiss actions",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "test": "vitest run"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Nitin-2468-dev/notified.git"
   },
-  "keywords": [],
+  "keywords": [
+    "windows",
+    "toast",
+    "reminder",
+    "tray"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
