@@ -113,7 +113,7 @@ describe('LapseMonitor', () => {
     await monitor.pollOnce();   // still in cooldown – suppressed
     expect(mockShowNotification).toHaveBeenCalledTimes(1);
 
-    // Advance past dismiss cooldown AND poll interval
+    // Advance past dismiss cooldown (10 min) + one poll interval (5 min) = 15 min
     vi.advanceTimersByTime(15 * 60 * 1000);
     await monitor.pollOnce();   // cooldown expired – should notify again
     expect(mockShowNotification).toHaveBeenCalledTimes(2);

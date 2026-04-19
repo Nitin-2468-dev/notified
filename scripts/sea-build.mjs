@@ -7,8 +7,8 @@
  * Output: notified.exe (Windows) / notified (Linux/macOS)
  */
 
-import { execSync } from 'node:child_process';
-import { cpSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { cpSync, writeFileSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
 const rootDir = resolve(import.meta.dirname, '..');
@@ -33,24 +33,33 @@ writeFileSync(
   'utf8',
 );
 
+function run(cmd, args) {
+  const result = spawnSync(cmd, args, { stdio: 'inherit' });
+  if (result.status !== 0) {
+    console.error(`Command failed: ${cmd} ${args.join(' ')}`);
+    process.exit(result.status ?? 1);
+  }
+}
+
 console.log('Generating SEA blob…');
-execSync(`node --experimental-sea-config ${seaConfig}`, { stdio: 'inherit' });
+// Use the Node.js binary path only – it's the current interpreter, not user input
+run(process.execPath, ['--experimental-sea-config', seaConfig]);
 
 console.log(`Copying node binary to ${outExe}…`);
 cpSync(process.execPath, outExe);
 
+const FUSE = 'NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2';
+
 if (isWin) {
   console.log('Injecting blob into exe…');
-  execSync(
-    `npx postject ${outExe} NODE_SEA_BLOB ${seaBlob} --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2`,
-    { cwd: rootDir, stdio: 'inherit' },
-  );
+  run('npx', ['postject', outExe, 'NODE_SEA_BLOB', seaBlob, '--sentinel-fuse', FUSE]);
 } else {
   console.log('Injecting blob…');
-  execSync(
-    `npx postject ${outExe} NODE_SEA_BLOB ${seaBlob} --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2 --macho-segment-name NODE_SEA`,
-    { cwd: rootDir, stdio: 'inherit' },
-  );
+  run('npx', [
+    'postject', outExe, 'NODE_SEA_BLOB', seaBlob,
+    '--sentinel-fuse', FUSE,
+    '--macho-segment-name', 'NODE_SEA',
+  ]);
 }
 
 console.log(`\n✓ Built: ${outExe}`);

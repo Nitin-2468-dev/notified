@@ -183,7 +183,13 @@ export async function ensureValidToken(config: AppConfig): Promise<string> {
     throw new Error('No refresh token available – re-authentication required.');
   }
 
-  const clientSecret = process.env['LAPSE_CLIENT_SECRET'] ?? '';
+  const clientSecret = process.env['LAPSE_CLIENT_SECRET'];
+  if (!clientSecret) {
+    throw new Error(
+      'LAPSE_CLIENT_SECRET environment variable is not set. ' +
+        'Set it before running: LAPSE_CLIENT_SECRET=<secret> node dist/main.js',
+    );
+  }
   const tokens = await refreshAccessToken(config.clientId, clientSecret, config.refreshToken);
   const updatedConfig = updateConfig({
     accessToken: tokens.access_token,

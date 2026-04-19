@@ -1,7 +1,4 @@
-/**
- * Windows-only helpers for managing the Windows startup registry entry.
- * On non-Windows platforms these functions do nothing.
- */
+import { spawn } from 'node:child_process';
 
 const APP_NAME = 'LapseNotifier';
 
@@ -11,7 +8,6 @@ function getRegistryKey(): string {
 
 async function runReg(args: string[]): Promise<boolean> {
   return new Promise<boolean>((resolve) => {
-    const { spawn } = require('node:child_process') as typeof import('node:child_process');
     const proc = spawn('reg', args, { stdio: 'ignore' });
     proc.on('close', (code) => resolve(code === 0));
     proc.on('error', () => resolve(false)); // reg not found (non-Windows)

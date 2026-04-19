@@ -42,15 +42,26 @@ async function firstRunSetup(): Promise<void> {
   );
 
   const clientId = await prompt('Enter your OAuth Client ID: ');
-  const clientSecret = await prompt('Enter your OAuth Client Secret: ');
+
+  // Accept the client secret from the environment (preferred – avoids terminal echo)
+  // or prompt for it as a fallback.
+  const envSecret = process.env['LAPSE_CLIENT_SECRET'];
+  const clientSecret = envSecret || (await prompt('Enter your OAuth Client Secret: '));
 
   if (!clientId || !clientSecret) {
     console.error('Client ID and secret are required.');
     process.exit(1);
   }
 
-  // Store client secret in environment so auth.ts can pick it up
-  process.env['LAPSE_CLIENT_SECRET'] = clientSecret;
+  if (!envSecret) {
+    // Store in env so auth.ts token-refresh path can pick it up during this session.
+    // The user should set LAPSE_CLIENT_SECRET in their environment for ongoing use.
+    process.env['LAPSE_CLIENT_SECRET'] = clientSecret;
+    console.log(
+      '\n⚠  Tip: set LAPSE_CLIENT_SECRET=<secret> in your environment ' +
+        'so you do not need to enter it again on restart.\n',
+    );
+  }
 
   ensureConfig(clientId);
 

@@ -1,4 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+// node-notifier ships both CJS and ESM. Using require() here is intentional for
+// CJS compatibility when bundled with ncc for the SEA executable.
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const nodeNotifier = require('node-notifier') as {
   notify: (
     opts: Record<string, unknown>,
