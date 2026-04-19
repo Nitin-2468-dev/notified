@@ -8,7 +8,7 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": ["node", "vitest/globals"],
+    "types": ["node", "node-notifier"],
     "ignoreDeprecations": "6.0"
   },
   "include": ["src"]

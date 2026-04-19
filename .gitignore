@@ -1,3 +1,8 @@
 node_modules/
 dist/
+bundle/
 coverage/
+sea-prep.blob
+sea-config.json
+notified.exe
+notified

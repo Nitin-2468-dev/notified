@@ -1,10 +1,13 @@
 {
   "name": "notified",
   "version": "1.0.0",
-  "description": "Windows tray pause reminder flow with Start/Dismiss actions",
-  "main": "dist/index.js",
+  "description": "Background notifier that alerts you when a Hack Club Lapse session is running",
+  "main": "dist/main.js",
+  "bin": "dist/main.js",
   "scripts": {
     "build": "tsc",
+    "bundle": "ncc build src/main.ts -o bundle --no-source-map-register",
+    "package": "npm run bundle && node scripts/sea-build.mjs",
     "test": "vitest run"
   },
   "repository": {
@@ -26,7 +29,13 @@
   "homepage": "https://github.com/Nitin-2468-dev/notified#readme",
   "devDependencies": {
     "@types/node": "^25.6.0",
+    "@types/node-notifier": "^8.0.5",
+    "@vercel/ncc": "^0.38.4",
     "typescript": "^6.0.3",
     "vitest": "^4.1.4"
+  },
+  "dependencies": {
+    "node-notifier": "^10.0.1",
+    "open": "^11.0.0"
   }
 }
